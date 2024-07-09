@@ -44,14 +44,16 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
       },
     ],
   };
+  const height = 400;
+  const width = 550;
   return (
-    <>
+    <div className="w-[550px] h-[400px]">
       {isLine ? (
-        <Line options={options} data={data} />
+        <Line options={options} data={data} height={height} width={width} />
       ) : (
-        <Bar options={options} data={data} />
+        <Bar options={options} data={data} height={height} width={width} />
       )}
-    </>
+    </div>
   );
 };
 export default Graphs;
