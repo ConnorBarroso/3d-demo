@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Graphs from "./components/Graphs/Graphs";
-import Link from "next/link";
 export interface GraphData {
   timestamps: string[];
   prices: number[];
@@ -10,12 +9,10 @@ export interface GraphData {
   coinId: string;
 }
 export default function Home() {
-  const [graphData, setGraphData] = useState<GraphData | null>();
+  const [graphData, setGraphData] = useState<GraphData[] | null>(null);
   const [queryParams, setQueryParams] = useState({
     coinId: "bitcoin",
     currency: "usd",
-    from: "	1704142880",
-    to: "1720627294",
     precision: "2",
   });
   const [isLine, setIsLine] = useState<boolean>(true);
@@ -23,22 +20,81 @@ export default function Home() {
   let graffiti = "Change to Bar";
   if (!isLine) graffiti = "Change to Line";
 
+  const handleEthereum = () => {
+    const newQuery = {
+      coinId: "ethereum",
+      currency: "usd",
+      precision: "2",
+    };
+
+    setQueryParams(newQuery);
+  };
+
+  const handleStEthereum = () => {
+    const newQuery = {
+      coinId: "staked-ether",
+      currency: "usd",
+      precision: "2",
+    };
+
+    setQueryParams(newQuery);
+  };
+
+  const handleCash = () => {
+    const newQuery = {
+      coinId: "bitcoin-cash",
+      currency: "usd",
+      precision: "2",
+    };
+
+    setQueryParams(newQuery);
+  };
   const handleToggle = () => {
     setIsLine(!isLine);
   };
-  //auto retrieves api data
+
   useEffect(() => {
     const handleRequest = async () => {
       setLoading(true);
       const res = await fetch(
-        `/api/getData?coinId=${queryParams.coinId}&currency=${queryParams.currency}&from=${queryParams.from}&to=${queryParams.to}&precision=${queryParams.precision}`
+        `/api/getData?coinId=${queryParams.coinId}&currency=${queryParams.currency}&precision=${queryParams.precision}`
       );
-      const data = await res.json();
-      setGraphData(data);
+      const resData = await res.json();
+      console.log(resData.status);
+      if (resData.status !== 200) {
+        console.error(`ERROR CODE: ${resData.status}`);
+        return;
+      }
+      const data = {
+        timestamps: resData.timestamps,
+        prices: resData.prices,
+        currency: resData.currency,
+        coinId: resData.coinId,
+      };
+      if (graphData === null) {
+        //if there's no array, return data in an array
+
+        setGraphData([data]);
+        setLoading(false);
+        return;
+      } else if (graphData.length >= 3) {
+        //if there are already 3 coins, remove the first coin the add the newest coin
+
+        const newGraphData = [...graphData.slice(1), data];
+        setGraphData(newGraphData);
+        setLoading(false);
+        return;
+      }
+      //spread in the old coins and add the new one.
+      const newGraphData = [...graphData, data];
+      setGraphData(newGraphData);
       setLoading(false);
-      console.log(graphData);
     };
-    if (!graphData || graphData.coinId !== queryParams.coinId) {
+    //if there is no graphData, or you wish to add a new coin attempt the request.
+    if (
+      !graphData ||
+      !graphData.some((coin) => coin.coinId === queryParams.coinId)
+    ) {
       handleRequest();
     }
   }, [graphData, loading, queryParams]);
@@ -59,6 +115,24 @@ export default function Home() {
           {graffiti}
         </button>
       </div>
+      <button
+        onClick={handleEthereum}
+        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
+      >
+        Add Etherium
+      </button>
+      <button
+        onClick={handleStEthereum}
+        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
+      >
+        Add StEtherium
+      </button>
+      <button
+        onClick={handleCash}
+        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
+      >
+        Add Bitcoin Cash
+      </button>
     </main>
   );
 }

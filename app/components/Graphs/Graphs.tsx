@@ -10,6 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  elements,
 } from "chart.js";
 import { GraphData } from "@/app/page";
 
@@ -25,13 +26,62 @@ ChartJS.register(
 );
 
 interface Props {
-  graphData: GraphData;
+  graphData: GraphData[];
   isLine: boolean;
 }
 
+const colors = ["rgb(75, 192, 192)", "rgb(255, 50, 50)", "rgb(48, 255, 50)"];
+
 const Graphs: FC<Props> = ({ graphData, isLine }) => {
-  const { prices, timestamps, currency, coinId } = graphData;
+  const { timestamps, currency } = graphData[0];
+
+  const listedCoins = graphData
+    .map((coin) => coin.coinId.replace("-", " "))
+    .join(", ");
+
+  // Initialize scales object with default x-axis
+  let scales: any = {
+    x: {
+      title: {
+        display: true,
+        text: "Weeks",
+      },
+    },
+  };
+
+  const datasets = graphData.map((coin, i) => {
+    const yAxisKey = `y${i + 1}`;
+
+    // Configure new y-axis if it doesn't exist
+    if (!scales[yAxisKey]) {
+      scales[yAxisKey] = {
+        position: i % 2 === 0 ? "left" : "right",
+        grid: {
+          drawOnChartArea: false,
+        },
+        title: {
+          display: true,
+          text: `${coin.coinId} Price`,
+        },
+      };
+    }
+
+    return {
+      label: `${coin.coinId} price`,
+      data: coin.prices,
+      borderColor: colors[i % colors.length],
+      pointRadius: 1.5,
+      backgroundColor: colors[i % colors.length],
+      yAxisID: yAxisKey,
+    };
+  });
+
   const options = {
+    elements: {
+      line: {
+        tension: 0.25,
+      },
+    },
     responsive: true,
     plugins: {
       legend: {
@@ -39,38 +89,20 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
       },
       title: {
         display: true,
-        text: `${coinId} Price over time (${currency.toLocaleUpperCase()})`,
+        text: `${listedCoins} Price over time (${currency.toUpperCase()})`,
       },
     },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Weeks",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Price",
-        },
-      },
-    },
+    scales: scales,
   };
+
   const data = {
     labels: timestamps,
-    datasets: [
-      {
-        label: "Price",
-        data: prices,
-        borderColor: "rgb(75, 192, 192)",
-        pointRadius: 1,
-        backgroundColor: "rgb(75, 192, 192)",
-      },
-    ],
+    datasets: datasets,
   };
+
   const height = 400;
   const width = 550;
+
   return (
     <div className="w-[550px] h-[400px]">
       {isLine ? (
@@ -81,4 +113,5 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
     </div>
   );
 };
+
 export default Graphs;

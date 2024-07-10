@@ -14,11 +14,9 @@ export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const coinId = searchParams.get("coinId");
   const currency = searchParams.get("currency");
-  const from = searchParams.get("from");
-  const to = searchParams.get("to");
   const precision = searchParams.get("precision");
 
-  if (!coinId || !currency || !from || !to || !precision) {
+  if (!coinId || !currency || !precision) {
     return NextResponse.json(
       { error: "Missing required query parameters" },
       { status: 400 }
@@ -32,7 +30,7 @@ export const GET = async (req: NextRequest) => {
       accept: "application/json",
     },
   };
-  const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=${currency}&from=${from}&to=${to}&precision=${precision}`;
+  const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=${currency}&from=1704142880&to=1720627294&precision=${precision}`;
   try {
     const res = await fetch(url, options);
     const data = await res.json();
@@ -51,12 +49,10 @@ export const GET = async (req: NextRequest) => {
       prices: formatPrices,
       currency,
       coinId,
+      status: 200,
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: "Failed to fetch data" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch data", status: 500 });
   }
 };
