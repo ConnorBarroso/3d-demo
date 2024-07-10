@@ -83,7 +83,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className=" flex-column content-center bg-white rounded-[5%] p-[15px]">
         {loading ? (
-          <div className="w-[550px] h-[400px]">
+          <div className="w-[550px] h-[400px] flex justify-center items-center">
             <h1 className="text-gray-500">Loading...</h1>
           </div>
         ) : (

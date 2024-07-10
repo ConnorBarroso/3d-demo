@@ -33,13 +33,12 @@ interface Props {
 const colors = ["rgb(31, 138, 170)", "rgb(200, 31, 31)", "rgb(31, 170, 31)"];
 
 const Graphs: FC<Props> = ({ graphData, isLine }) => {
-  const { timestamps, currency } = graphData[0];
+  const { timestamps } = graphData[0];
 
   const listedCoins = graphData
     .map((coin) => coin.coinId.replace("-", " "))
     .join(", ");
 
-  // Initialize scales object with default x-axis
   let scales: any = {
     x: {
       title: {
