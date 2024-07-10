@@ -1,14 +1,30 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { format } from "date-fns";
+const formatData = (array: number[], date: boolean) => {
+  // takes every seventh date
+  const filter = array.filter((_, i) => (i + 1) % 7 === 0);
 
-export const GET = async () => {
-  const params = {
-    coinId: "bitcoin",
-    currency: "usd",
-    from: "1704150201",
-    to: "1720476201",
-    precision: "2",
-  };
+  if (date) {
+    return filter.map((timestamp) => format(new Date(timestamp), "dd/MM"));
+  }
+  return filter;
+};
+
+export const GET = async (req: NextRequest) => {
+  const { searchParams } = new URL(req.url);
+  const coinId = searchParams.get("coinId");
+  const currency = searchParams.get("currency");
+  const from = searchParams.get("from");
+  const to = searchParams.get("to");
+  const precision = searchParams.get("precision");
+
+  if (!coinId || !currency || !from || !to || !precision) {
+    return NextResponse.json(
+      { error: "Missing required query parameters" },
+      { status: 400 }
+    );
+  }
+
   const options = {
     method: "GET",
     headers: {
@@ -16,7 +32,7 @@ export const GET = async () => {
       accept: "application/json",
     },
   };
-  const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=${params.currency}&from=${params.from}&to=${params.to}&precision=${params.precision}`;
+  const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=${currency}&from=${from}&to=${to}&precision=${precision}`;
   try {
     const res = await fetch(url, options);
     const data = await res.json();
@@ -26,16 +42,15 @@ export const GET = async () => {
       timestamps.push(x[0]);
       prices.push(x[1]);
     });
-    // takes every fifth date and formats it.
-    const formatTimestamps = timestamps
-      .filter((_, i) => (i + 1) % 7 === 0)
-      .map((timestamp) => format(new Date(timestamp), "dd/MM"));
 
-    const formatPrices = prices.filter((_, i) => (i + 1) % 7 === 0);
+    const formatTimestamps = formatData(timestamps, true);
+    const formatPrices = formatData(prices, false);
 
     return NextResponse.json({
       timestamps: formatTimestamps,
       prices: formatPrices,
+      currency,
+      coinId,
     });
   } catch (err) {
     console.error(err);

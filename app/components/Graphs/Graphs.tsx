@@ -30,8 +30,33 @@ interface Props {
 }
 
 const Graphs: FC<Props> = ({ graphData, isLine }) => {
-  const { prices, timestamps } = graphData;
-  const options = {};
+  const { prices, timestamps, currency, coinId } = graphData;
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+      },
+      title: {
+        display: true,
+        text: `${coinId} Price over time (${currency.toLocaleUpperCase()})`,
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Weeks",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Price",
+        },
+      },
+    },
+  };
   const data = {
     labels: timestamps,
     datasets: [
