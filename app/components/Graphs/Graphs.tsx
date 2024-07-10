@@ -30,7 +30,7 @@ interface Props {
   isLine: boolean;
 }
 
-const colors = ["rgb(75, 192, 192)", "rgb(255, 50, 50)", "rgb(48, 255, 50)"];
+const colors = ["rgb(31, 138, 170)", "rgb(200, 31, 31)", "rgb(31, 170, 31)"];
 
 const Graphs: FC<Props> = ({ graphData, isLine }) => {
   const { timestamps, currency } = graphData[0];

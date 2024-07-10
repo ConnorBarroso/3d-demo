@@ -16,19 +16,19 @@ const NewCoinForm: React.FC<Props> = ({ handleQuery }) => {
   };
 
   const styles = {
-    label: "text-white",
-    select: "text-white outline-none bg-transparent cursor-pointer",
+    label: "text-white text-center items-center",
+    select: "text-white text-center outline-none bg-transparent cursor-pointer",
     option: " text-white bg-gray-500 ",
   };
 
   return (
-    <div className=" h-[100%] w-[35%] flex-column justify-center content-center bg-gray-500 p-[20px] rounded-[5%]">
+    <div className=" h-[100%] w-[100%] flex-column justify-center items-center content-center bg-gray-500 ">
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col w-[100%] justify-center">
-          <div className="flex flex-col w-[100]% ">
-            <div className="flex justify-between w-[100%]">
+        <div className="flex  w-[100%] justify-around items-center ">
+          <div className="flex  w-[100]% ">
+            <div>
               <label className={styles.label} htmlFor="coin">
-                Coin:{" "}
+                Coin:
               </label>
               <select id="coin" className={styles.select} ref={coinRef}>
                 <option className={styles.option} value="bitcoin">
@@ -46,7 +46,7 @@ const NewCoinForm: React.FC<Props> = ({ handleQuery }) => {
               </select>
             </div>
           </div>
-          <div className="flex justify-between w-[100%] mt-[5px]">
+          <div>
             <label className={styles.label} htmlFor="currency">
               Currency:{" "}
             </label>
@@ -62,8 +62,9 @@ const NewCoinForm: React.FC<Props> = ({ handleQuery }) => {
               </option>
             </select>
           </div>
+
           <button
-            className="text-white border-[2px] rounded p-[3px]  mt-[5px]"
+            className="text-white border-[2px] rounded p-[3px] "
             type="submit"
           >
             Submit

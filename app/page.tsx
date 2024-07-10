@@ -89,11 +89,11 @@ export default function Home() {
         ) : (
           graphData && <Graphs graphData={graphData} isLine={isLine} />
         )}
-        <div className="flex justify-between h-[130px] mt-[5px] ">
+        <div className="flex justify-between h-[60px] mt-[5px] bg-gray-500 ">
           <NewCoinForm handleQuery={handleQuery} />
           <button
             onClick={handleToggle}
-            className="flex justify-center items-center text-[20px] w-[30%] bg-gray-500 border border-white rounded-[5%] p-4 cursor-pointer"
+            className="flex justify-center items-center text-[18px] w-[35%] h-[100%] pr-[4px] cursor-pointer"
           >
             {graffiti}
           </button>
