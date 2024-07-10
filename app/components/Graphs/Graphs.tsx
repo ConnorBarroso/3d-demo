@@ -59,15 +59,18 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
         grid: {
           drawOnChartArea: false,
         },
+        ticks: {
+          display: true,
+        },
         title: {
           display: true,
-          text: `${coin.coinId} Price`,
+          text: `${coin.coinId} Price (${coin.currency.toUpperCase()})`,
         },
       };
     }
 
     return {
-      label: `${coin.coinId} price`,
+      label: `${coin.coinId}`,
       data: coin.prices,
       borderColor: colors[i % colors.length],
       pointRadius: 1.5,
@@ -89,7 +92,7 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
       },
       title: {
         display: true,
-        text: `${listedCoins} Price over time (${currency.toUpperCase()})`,
+        text: `${listedCoins} Price over time`,
       },
     },
     scales: scales,
@@ -104,7 +107,7 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
   const width = 550;
 
   return (
-    <div className="w-[550px] h-[400px]">
+    <div className="w-[550px] h-[400px]  ">
       {isLine ? (
         <Line options={options} data={data} height={height} width={width} />
       ) : (

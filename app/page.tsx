@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Graphs from "./components/Graphs/Graphs";
+import NewCoinForm from "./components/NewCoinForm/NewCoinForm";
 export interface GraphData {
   timestamps: string[];
   prices: number[];
@@ -20,35 +21,16 @@ export default function Home() {
   let graffiti = "Change to Bar";
   if (!isLine) graffiti = "Change to Line";
 
-  const handleEthereum = () => {
+  const handleQuery = (id: string, currency: string): void => {
     const newQuery = {
-      coinId: "ethereum",
-      currency: "usd",
+      coinId: id,
+      currency: currency,
       precision: "2",
     };
 
     setQueryParams(newQuery);
   };
 
-  const handleStEthereum = () => {
-    const newQuery = {
-      coinId: "staked-ether",
-      currency: "usd",
-      precision: "2",
-    };
-
-    setQueryParams(newQuery);
-  };
-
-  const handleCash = () => {
-    const newQuery = {
-      coinId: "bitcoin-cash",
-      currency: "usd",
-      precision: "2",
-    };
-
-    setQueryParams(newQuery);
-  };
   const handleToggle = () => {
     setIsLine(!isLine);
   };
@@ -60,7 +42,6 @@ export default function Home() {
         `/api/getData?coinId=${queryParams.coinId}&currency=${queryParams.currency}&precision=${queryParams.precision}`
       );
       const resData = await res.json();
-      console.log(resData.status);
       if (resData.status !== 200) {
         console.error(`ERROR CODE: ${resData.status}`);
         return;
@@ -100,7 +81,7 @@ export default function Home() {
   }, [graphData, loading, queryParams]);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className=" flex-column content-center bg-white p-[20px] rounded-[5%] ">
+      <div className=" flex-column content-center bg-white rounded-[5%] p-[15px]">
         {loading ? (
           <div className="w-[550px] h-[400px]">
             <h1 className="text-gray-500">Loading...</h1>
@@ -108,31 +89,16 @@ export default function Home() {
         ) : (
           graphData && <Graphs graphData={graphData} isLine={isLine} />
         )}
-        <button
-          onClick={handleToggle}
-          className="flex justify-center text-[30px] w-[100%] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
-        >
-          {graffiti}
-        </button>
+        <div className="flex justify-between h-[130px] mt-[5px] ">
+          <NewCoinForm handleQuery={handleQuery} />
+          <button
+            onClick={handleToggle}
+            className="flex justify-center items-center text-[20px] w-[30%] bg-gray-500 border border-white rounded-[5%] p-4 cursor-pointer"
+          >
+            {graffiti}
+          </button>
+        </div>
       </div>
-      <button
-        onClick={handleEthereum}
-        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
-      >
-        Add Etherium
-      </button>
-      <button
-        onClick={handleStEthereum}
-        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
-      >
-        Add StEtherium
-      </button>
-      <button
-        onClick={handleCash}
-        className="flex justify-center text-[30px] w-[50vw] mt-[5px] bg-gray-500 border border-white rounded-[50px] p-4 cursor-pointer"
-      >
-        Add Bitcoin Cash
-      </button>
     </main>
   );
 }
