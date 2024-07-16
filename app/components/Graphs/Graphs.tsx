@@ -27,12 +27,13 @@ ChartJS.register(
 
 interface Props {
   graphData: GraphData[];
+  currency: string;
   isLine: boolean;
 }
 
 const colors = ["rgb(31, 138, 170)", "rgb(200, 31, 31)", "rgb(31, 170, 31)"];
 
-const Graphs: FC<Props> = ({ graphData, isLine }) => {
+const Graphs: FC<Props> = ({ graphData, currency, isLine }) => {
   const { timestamps } = graphData[0];
 
   const listedCoins = graphData
@@ -63,7 +64,7 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
         },
         title: {
           display: true,
-          text: `${coin.coinId} Price (${coin.currency.toUpperCase()})`,
+          text: `${coin.coinId} Price`,
         },
       };
     }
@@ -91,7 +92,7 @@ const Graphs: FC<Props> = ({ graphData, isLine }) => {
       },
       title: {
         display: true,
-        text: `${listedCoins} Price over time`,
+        text: `${listedCoins} Price over time (${currency?.toUpperCase()})`,
       },
     },
     scales: scales,

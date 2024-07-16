@@ -14,9 +14,8 @@ export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const coinId = searchParams.get("coinId");
   const currency = searchParams.get("currency");
-  const precision = searchParams.get("precision");
 
-  if (!coinId || !currency || !precision) {
+  if (!coinId || !currency) {
     return NextResponse.json(
       { error: "Missing required query parameters" },
       { status: 400 }
@@ -30,7 +29,7 @@ export const GET = async (req: NextRequest) => {
       accept: "application/json",
     },
   };
-  const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=${currency}&from=1704142880&to=1720627294&precision=${precision}`;
+  const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=${currency}&from=1704142880&to=1720627294&precision=2`;
   try {
     const res = await fetch(url, options);
     const data = await res.json();
@@ -47,7 +46,6 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({
       timestamps: formatTimestamps,
       prices: formatPrices,
-      currency,
       coinId,
       status: 200,
     });
