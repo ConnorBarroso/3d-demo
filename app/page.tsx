@@ -50,9 +50,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (!graphData || !graphData.some((coin) => coin.coinId === queryId)) {
+    if (!graphData || graphData.every((coin) => coin.coinId !== queryId)) {
       setLoading(true);
-      handleRequest(queryId, currency).then((data) => {
+      handleRequest(queryId, currency).then(async (data) => {
         if (data) {
           setGraphData((prevData) => {
             if (prevData === null) {
@@ -70,6 +70,7 @@ export default function Home() {
   }, [graphData, queryId]);
 
   useEffect(() => {
+    if (!graphData) return;
     if (prevCurrency !== currency) {
       setLoading(true);
       // use Promise.all instead of async / await for faster loading
@@ -83,7 +84,6 @@ export default function Home() {
       });
     }
   }, [currency, prevCurrency]);
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="flex-column content-center bg-white rounded-[5%] p-[15px]">
