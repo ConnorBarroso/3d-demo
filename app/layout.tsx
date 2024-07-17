@@ -25,7 +25,7 @@ export default function RootLayout({
         {" "}
         <div className=" flex items-center bg-white w-[100vw] h-[60px] absolute top-0">
           <Link href={"/"} className="text-gray-500 pl-[20px] font-bold">
-            Connor Barroso Quik Showcase
+            Connor Barroso Qlik Showcase
           </Link>
           <Link
             href={"/about-me"}
